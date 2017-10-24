@@ -588,9 +588,6 @@ static struct {
 	{ "fs3",	writestress },
 	{ "fs4",	writestress2 },
 	{ "fs5",	createstress },
-
-	/* my tests */
-	{ "ht", hello },
 	{ NULL, NULL }
 };
 

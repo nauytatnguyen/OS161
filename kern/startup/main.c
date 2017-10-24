@@ -104,9 +104,9 @@ boot(void)
 	kprintf("Noah, system version %s (%s #%d)\n", 
 		GROUP_VERSION, buildconfig, buildversion);
 	kprintf("\n");
-
-	hello() /* run the hello world function */
-
+	
+	hello(); /* run the hello world function */
+	
 	/* Early initialization. */
 	ram_bootstrap();
 	proc_bootstrap();

@@ -1,4 +1,4 @@
-cscope 15 $HOME/os161               0000680937
+cscope 15 $HOME/OS161               0000680918
 	@build/install/hostinclude/hostcompat.h
 
 31 
@@ -17925,7 +17925,7 @@ _OPT_SYNCHPROBS_H_
 
 2 cÚ¡ 
 	gbuždv”siÚ
- = 2;
+ = 3;
 
 3 cÚ¡ 
 	gbuždcÚfig
@@ -44808,28 +44808,24 @@ m®loc¡»ss
 (, **);
 
 84 
-h–lÙe¡
-(, **);
-
-87 
 ruÅrog¿m
 (*
 ´ogÇme
 );
 
-90 
+87 
 m’u
 (*
 ¬g¡r
 );
 
-93 
+90 
 kmaš
 (*
 boÙ¡ršg
 );
 
-96 
+93 
 h–lo
 ();
 
@@ -51355,6 +51351,116 @@ p_lock
 	}
 }
 
+	@kern/startup/greet_api.c
+
+1 
+	~<¡dio.h
+>
+
+2 
+	~<¡dlib.h
+>
+
+5 
+	sg»‘_­i
+{
+
+6 (*
+	m§y_h–lo
+)(*
+	mÇme
+);
+
+7 (*
+	m§y_goodbye
+)();
+
+11 
+	$§y_h–lo_â
+(*
+Çme
+){
+
+12 
+	`´štf
+("H–lØ%s\n", 
+Çme
+);
+
+14 
+	}
+}
+
+17 
+	$§y_goodbye_â
+(){
+
+19 
+	`´štf
+("Goodbye\n");
+
+21 
+	}
+}
+
+24 
+g»‘_­i
+ 
+	gg»‘_­i
+ ={
+
+26 .
+§y_h–lo
+ = 
+§y_h–lo_â
+,
+
+27 .
+	g§y_goodbye
+ = 
+§y_goodbye_â
+
+
+32 
+	$maš
+(
+¬gc
+, *
+¬gv
+[]){
+
+34 
+g»‘_­i
+.
+	`§y_h–lo
+(
+¬gv
+[1]);
+
+35 
+g»‘_­i
+.
+	`§y_goodbye
+();
+
+37 
+	`´štf
+("%p, %p, %p\n", 
+g»‘_­i
+.
+§y_h–lo
+, 
+§y_h–lo_â
+, &say_hello_fn);
+
+39 
+	`ex™
+(0);
+
+40 
+	}
+}
+
 	@kern/startup/hello.c
 
 1 
@@ -53003,8 +53109,8 @@ wr™e¡»ss2
 ü—‹¡»ss
  },
 
-593 { "åt", 
-å‹¡
+593 { "ht", 
+h–lo
  },
 
 594 { 
@@ -53346,116 +53452,6 @@ buf
 , 0);
 
 714 
-	}
-}
-
-	@kern/startup/pptest.c
-
-1 
-	~<¡dio.h
->
-
-2 
-	~<¡dlib.h
->
-
-5 
-	sg»‘_­i
-{
-
-6 (*
-	m§y_h–lo
-)(*
-	mÇme
-);
-
-7 (*
-	m§y_goodbye
-)();
-
-11 
-	$§y_h–lo_â
-(*
-Çme
-){
-
-12 
-	`´štf
-("H–lØ%s\n", 
-Çme
-);
-
-14 
-	}
-}
-
-17 
-	$§y_goodbye_â
-(){
-
-19 
-	`´štf
-("Goodbye\n");
-
-21 
-	}
-}
-
-24 
-g»‘_­i
- 
-	gg»‘_­i
- ={
-
-26 .
-§y_h–lo
- = 
-§y_h–lo_â
-,
-
-27 .
-	g§y_goodbye
- = 
-§y_goodbye_â
-
-
-32 
-	$maš
-(
-¬gc
-, *
-¬gv
-[]){
-
-34 
-g»‘_­i
-.
-	`§y_h–lo
-(
-¬gv
-[1]);
-
-35 
-g»‘_­i
-.
-	`§y_goodbye
-();
-
-37 
-	`´štf
-("%p, %p, %p\n", 
-g»‘_­i
-.
-§y_h–lo
-, 
-§y_h–lo_â
-, &say_hello_fn);
-
-39 
-	`ex™
-(0);
-
-40 
 	}
 }
 
@@ -135698,7 +135694,7 @@ i
 .
 0
 502
-14096
+14099
 build/install/hostinclude/hostcompat.h
 build/install/include/assert.h
 build/install/include/err.h
@@ -135930,10 +135926,10 @@ kern/lib/misc.c
 kern/lib/queue.c
 kern/lib/uio.c
 kern/proc/proc.c
+kern/startup/greet_api.c
 kern/startup/hello.c
 kern/startup/main.c
 kern/startup/menu.c
-kern/startup/pptest.c
 kern/synchprobs/catmouse.c
 kern/synchprobs/catmouse_synch.c
 kern/synchprobs/whalemating.c
