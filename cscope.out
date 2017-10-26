@@ -1,4 +1,4 @@
-cscope 15 $HOME/OS161               0000680918
+cscope 15 $HOME/os161               0000680894
 	@build/install/hostinclude/hostcompat.h
 
 31 
@@ -17925,7 +17925,7 @@ _OPT_SYNCHPROBS_H_
 
 2 cÚ¡ 
 	gbudv”siÚ
- = 3;
+ = 9;
 
 3 cÚ¡ 
 	gbudcÚfig
@@ -51481,7 +51481,7 @@ g»‘_­i
 
 6 
 	`k´štf
-("Hello World\n");
+("Hello......................................World!\n");
 
 7 
 	}
@@ -51619,7 +51619,7 @@ budv”siÚ
 
 108 
 	`h–lo
-()
+();
 
 111 
 	`¿m_boÙ¡¿p
@@ -53109,21 +53109,17 @@ wr™e¡»ss2
 ü—‹¡»ss
  },
 
-593 { "ht", 
-h–lo
- },
-
-594 { 
+591 { 
 NULL
 , NULL }
 
-602 
+599 
 	$cmd_di¥©ch
 (*
 cmd
 )
 
-604 
+601 
 time_t
  
 befÜe£cs
@@ -53133,7 +53129,7 @@ aá”£cs
 £cs
 ;
 
-605 
+602 
 ušt32_t
  
 befÜ’£cs
@@ -53143,31 +53139,31 @@ aá”n£cs
 n£cs
 ;
 
-606 *
+603 *
 ¬gs
 [
 MAXMENUARGS
 ];
 
-607 
+604 
 Çrgs
 =0;
 
-608 *
+605 *
 wÜd
 ;
 
-609 *
+606 *
 cÚ‹xt
 ;
 
-610 
+607 
 i
 , 
 »suÉ
 ;
 
-612 
+609 
 wÜd
  = 
 	`¡¹ok_r
@@ -53177,13 +53173,13 @@ cmd
 cÚ‹xt
 );
 
-613 
+610 
 wÜd
  !ğ
 NULL
 ;
 
-614 
+611 
 wÜd
  = 
 	`¡¹ok_r
@@ -53193,21 +53189,21 @@ NULL
 cÚ‹xt
 )) {
 
-616 ià(
+613 ià(
 Çrgs
  >ğ
 MAXMENUARGS
 ) {
 
-617 
+614 
 	`k´štf
 ("Command†ine hasoo many words\n");
 
-618  
+615  
 E2BIG
 ;
 
-620 
+617 
 ¬gs
 [
 Çrgs
@@ -53215,11 +53211,11 @@ E2BIG
 wÜd
 ;
 
-623 ià(
+620 ià(
 Çrgs
 ==0) {
 
-627 
+624 
 i
 =0; 
 cmdbË
@@ -53227,7 +53223,7 @@ cmdbË
 Çme
 ; i++) {
 
-628 ià(*
+625 ià(*
 cmdbË
 [
 i
@@ -53239,7 +53235,7 @@ i
 ¬gs
 [0], cmdtable[i].name)) {
 
-629 
+626 
 	`KASSERT
 (
 cmdbË
@@ -53251,7 +53247,7 @@ func
 NULL
 );
 
-631 
+628 
 	`g‘time
 (&
 befÜe£cs
@@ -53259,7 +53255,7 @@ befÜe£cs
 befÜ’£cs
 );
 
-633 
+630 
 »suÉ
  = 
 cmdbË
@@ -53273,7 +53269,7 @@ i
 ¬gs
 );
 
-635 
+632 
 	`g‘time
 (&
 aá”£cs
@@ -53281,7 +53277,7 @@ aá”£cs
 aá”n£cs
 );
 
-636 
+633 
 	`g‘š‹rv®
 (
 befÜe£cs
@@ -53289,49 +53285,49 @@ befÜe£cs
 befÜ’£cs
 ,
 
-637 
+634 
 aá”£cs
 , 
 aá”n£cs
 ,
 
-638 &
+635 &
 £cs
 , &
 n£cs
 );
 
-640 
+637 
 	`k´štf
 ("Operationook %lu.%09lu seconds\n",
 
-641 (è
+638 (è
 £cs
 ,
 
-642 (è
+639 (è
 n£cs
 );
 
-644  
+641  
 »suÉ
 ;
 
-648 
+645 
 	`k´štf
 ("%s: Commªd‚Ù found\n", 
 ¬gs
 [0]);
 
-649  
+646  
 EINVAL
 ;
 
-650 
+647 
 	}
 }
 
-661 
+658 
 	$m’u_execu‹
 (*
 lše
@@ -53339,19 +53335,19 @@ lše
 i§rgs
 )
 
-663 *
+660 *
 commªd
 ;
 
-664 *
+661 *
 cÚ‹xt
 ;
 
-665 
+662 
 »suÉ
 ;
 
-667 
+664 
 commªd
  = 
 	`¡¹ok_r
@@ -53361,13 +53357,13 @@ lše
 cÚ‹xt
 );
 
-668 
+665 
 commªd
  !ğ
 NULL
 ;
 
-669 
+666 
 commªd
  = 
 	`¡¹ok_r
@@ -53377,17 +53373,17 @@ NULL
 cÚ‹xt
 )) {
 
-671 ià(
+668 ià(
 i§rgs
 ) {
 
-672 
+669 
 	`k´štf
 ("OS/161 k”Ãl: %s\n", 
 commªd
 );
 
-675 
+672 
 »suÉ
  = 
 	`cmd_di¥©ch
@@ -53395,11 +53391,11 @@ commªd
 commªd
 );
 
-676 ià(
+673 ià(
 »suÉ
 ) {
 
-677 
+674 
 	`k´štf
 ("M’u commªd faed: %s\n", 
 	`¡»¼Ü
@@ -53407,51 +53403,51 @@ commªd
 »suÉ
 ));
 
-678 ià(
+675 ià(
 i§rgs
 ) {
 
-679 
+676 
 	`·nic
 ("Failure…rocessing kernel‡rguments\n");
 
-683 
+680 
 	}
 }
 
-703 
+700 
 	$m’u
 (*
 ¬gs
 )
 
-705 
+702 
 buf
 [64];
 
-707 
+704 
 	`m’u_execu‹
 (
 ¬gs
 , 1);
 
-710 
+707 
 	`k´štf
 ("OS/161 kernel [? for menu]: ");
 
-711 
+708 
 	`kg‘s
 (
 buf
 , (buf));
 
-712 
+709 
 	`m’u_execu‹
 (
 buf
 , 0);
 
-714 
+711 
 	}
 }
 
@@ -59920,12 +59916,6 @@ rv
 646 
 	}
 }
-
-	@kern/test/hellotest.c
-
-1 
-	~<‹¡.h
->
 
 	@kern/test/malloctest.c
 
@@ -135693,8 +135683,8 @@ i
 1
 .
 0
-502
-14099
+501
+14077
 build/install/hostinclude/hostcompat.h
 build/install/include/assert.h
 build/install/include/err.h
@@ -135941,7 +135931,6 @@ kern/syscall/time_syscalls.c
 kern/test/arraytest.c
 kern/test/bitmaptest.c
 kern/test/fstest.c
-kern/test/hellotest.c
 kern/test/malloctest.c
 kern/test/nettest.c
 kern/test/synchtest.c
