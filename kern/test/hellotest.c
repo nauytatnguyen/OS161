@@ -4,9 +4,8 @@
 
 int hellotest(int nargs, char **args){
 	(void)nargs;
-	(void)args;
 	
-	kprintf("Hello Test");
+	kprintf("Hello Test %s \n", args[1] );
 
 	return 0;
 }
