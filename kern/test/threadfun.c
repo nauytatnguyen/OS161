@@ -25,10 +25,10 @@ static
 void
 funthread(void *junk, unsigned long num )
 {
-	 int ch = '0'+num;
-    
-	 (void)junk;
+	 int ch = '0' + num;
 
+	 (void)junk;
+	 
 	 putch(ch);
     
 	 V(tsem);

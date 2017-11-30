@@ -1,4 +1,4 @@
-cscope 15 $HOME/os161/kern               0000338103
+cscope 15 $HOME/os161/kern               0000338202
 	@arch/mips/include/current.h
 
 30 #i‚de‡
@@ -9519,7 +9519,7 @@ _OPT_SYNCHPROBS_H_
 
 2 c⁄° 
 	gbuûdvîsi⁄
- = 12;
+ = 16;
 
 3 c⁄° 
 	gbuûdc⁄fig
@@ -52957,13 +52957,7 @@ UW
 	~<ã°.h
 >
 
-10 
-	#NTHREADS
- 10
-
-	)
-
-12 
+10 
 £m≠h‹e
  *
 	gt£m
@@ -52971,83 +52965,93 @@ UW
 NULL
 ;
 
-16 
+14 
 	$öô_£m
 ()
 
-18 i‡(
+16 i‡(
 t£m
 ==
 NULL
 ) {
 
-19 
+17 
 t£m
  = 
 	`£m_¸óã
 ("tsem", 0);
 
-20 i‡(
+18 i‡(
 t£m
  =
 NULL
 ) {
 
-21 
+19 
 	`∑nic
 ("threadtest: sem_create failed\n");
 
-24 
+22 
 	}
 }
 
-28 
+26 
 	$fu¡hªad
-()
+(*
+junk
+, 
+num
+ )
 
-30 
-	`k¥ötf
-("thread");
+28 
+ch
+ = '0' + 
+num
+;
+
+30 ()
+junk
+;
 
 32 
+	`putch
+(
+ch
+);
+
+34 
 	`V
 (
 t£m
 );
 
-33 
+35 
 	}
 }
 
-37 
+39 
 	$ru¡hªads
-(**
-¨gs
+(
+NTHREADS
 )
 
-39 
-	`k¥ötf
-(
-¨gs
-);
-
-40 
+42 
 «me
 [16];
 
-41 
+43 
 i
 , 
 ªsu…
 ;
 
-43 
+45 
 i
 =0; i<
 NTHREADS
 ; i++) {
 
-44 
+46 
 	`¢¥ötf
 (
 «me
@@ -53055,7 +53059,7 @@ NTHREADS
 i
 );
 
-45 
+47 
 ªsu…
  = 
 	`thªad_f‹k
@@ -53067,39 +53071,39 @@ NULL
 fu¡hªad
 , NULL, 
 i
-, NULL);
+);
 
-46 i‡(
+48 i‡(
 ªsu…
 ) {
 
-47 
+49 
 	`∑nic
 ("threadtest:Åhread_fork failed %s)\n",
 
-48 
+50 
 	`°ªº‹
 (
 ªsu…
 ));
 
-52 
+54 
 i
 =0; i<
 NTHREADS
 ; i++) {
 
-53 
+55 
 	`P
 (
 t£m
 );
 
-55 
+57 
 	}
 }
 
-59 
+61 
 	$thªadfun
 (
 «rgs
@@ -53107,29 +53111,47 @@ t£m
 ¨gs
 )
 
-61 ()
+64 
+NTHREADS
+ = 10;
+
+66 if–
 «rgs
+ > 1 ){
+
+67 
+num
+ = 
+	`©oi
+–
+¨gs
+[1] );
+
+68 
+NTHREADS
+ = 
+num
 ;
 
-63 
+71 
 	`öô_£m
 ();
 
-64 
+72 
 	`k¥ötf
-("StartingÅhread fun...\n");
+("\nStartingÅhread fun...\n\n");
 
-65 
+73 
 	`ru¡hªads
 (
-¨gs
+NTHREADS
 );
 
-66 
+74 
 	`k¥ötf
-("\nThread fun done.\n");
+("\n\nThread fun done.\n");
 
-69 
+77 
 	}
 }
 

@@ -61,6 +61,8 @@ int semtest(int, char **);
 int locktest(int, char **);
 int cvtest(int, char **);
 
+int unsafethreadcounter(int, char **);
+
 #ifdef UW
 /* Another thread and synchronization test */
 int uwlocktest1(int, char **);

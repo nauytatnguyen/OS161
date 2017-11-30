@@ -476,6 +476,7 @@ static const char *testmenu[] = {
 	"[fs5] FS create stress      (4)     ",
 	"[ht] hello test                     ",
 	"[tf] thread fun							 ",
+	"[utt] unsafe thread counter			 ",
 	NULL
 };
 
@@ -593,6 +594,7 @@ static struct {
 	/* hello test*/
 	{ "ht", hellotest },
 	{ "tf", threadfun },
+	{ "utt", unsafethreadcounter },
 	{ NULL, NULL }
 };
 

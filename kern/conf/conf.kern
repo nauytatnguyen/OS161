@@ -445,7 +445,7 @@ file    test/uw-tests.c
 
 file 	  test/hellotest.c
 file 	  test/threadfun.c
-
+file    test/unsafethreadcounter.c
 
 # UW options for different assignments
 defoption A0
