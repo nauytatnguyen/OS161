@@ -62,6 +62,7 @@ int locktest(int, char **);
 int cvtest(int, char **);
 
 int unsafethreadcounter(int, char **);
+int lockthreadcounter(int, char **);
 
 #ifdef UW
 /* Another thread and synchronization test */
@@ -96,5 +97,6 @@ void kmain(char *bootstring);
 int hellotest(int, char **);
 
 void hello(void);
+
 
 #endif /* _TEST_H_ */
