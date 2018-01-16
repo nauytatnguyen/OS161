@@ -444,6 +444,11 @@ optfile net	test/nettest.c
 file    test/uw-tests.c
 
 file 	  test/hellotest.c
+file 	  test/threadfun.c
+file      test/unsafethreadcounter.c
+file      test/lockthreadcounter.c
+file      test/spinlockthreadcounter.c
+
 
 # UW options for different assignments
 defoption A0

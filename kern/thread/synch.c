@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009
- *	The President and Fellows of Harvard College.
+ *  The President and Fellows of Harvard College.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,7 +41,6 @@
 #include <synch.h>
 
 ////////////////////////////////////////////////////////////
-//
 // Semaphore.
 
 struct semaphore *
@@ -81,8 +80,8 @@ sem_destroy(struct semaphore *sem)
         KASSERT(sem != NULL);
 
 	/* wchan_cleanup will assert if anyone's waiting on it */
-	spinlock_cleanup(&sem->sem_lock);
-	wchan_destroy(sem->sem_wchan);
+	    spinlock_cleanup(&sem->sem_lock);
+	    wchan_destroy(sem->sem_wchan);
         kfree(sem->sem_name);
         kfree(sem);
 }
@@ -101,167 +100,307 @@ P(struct semaphore *sem)
         KASSERT(curthread->t_in_interrupt == false);
 
 	spinlock_acquire(&sem->sem_lock);
-        while (sem->sem_count == 0) {
-		/*
-		 * Bridge to the wchan lock, so if someone else comes
-		 * along in V right this instant the wakeup can't go
-		 * through on the wchan until we've finished going to
-		 * sleep. Note that wchan_sleep unlocks the wchan.
-		 *
-		 * Note that we don't maintain strict FIFO ordering of
-		 * threads going through the semaphore; that is, we
-		 * might "get" it on the first try even if other
-		 * threads are waiting. Apparently according to some
-		 * textbooks semaphores must for some reason have
-		 * strict ordering. Too bad. :-)
-		 *
-		 * Exercise: how would you implement strict FIFO
-		 * ordering?
-		 */
-		wchan_lock(sem->sem_wchan);
-		spinlock_release(&sem->sem_lock);
-                wchan_sleep(sem->sem_wchan);
+  while (sem->sem_count == 0) {
+		  wchan_lock(sem->sem_wchan);
+	  	spinlock_release(&sem->sem_lock);
+      wchan_sleep(sem->sem_wchan);
 
-		spinlock_acquire(&sem->sem_lock);
-        }
-        KASSERT(sem->sem_count > 0);
-        sem->sem_count--;
+		  spinlock_acquire(&sem->sem_lock);
+  }
+  KASSERT(sem->sem_count > 0);
+  sem->sem_count--;
 	spinlock_release(&sem->sem_lock);
 }
 
 void
 V(struct semaphore *sem)
 {
-        KASSERT(sem != NULL);
+  KASSERT(sem != NULL);
 
 	spinlock_acquire(&sem->sem_lock);
 
-        sem->sem_count++;
-        KASSERT(sem->sem_count > 0);
+    sem->sem_count++;
+    KASSERT(sem->sem_count > 0);
 	wchan_wakeone(sem->sem_wchan);
 
 	spinlock_release(&sem->sem_lock);
 }
 
 ////////////////////////////////////////////////////////////
-//
-// Lock.
+// Lock - SPB & FAR
 
 struct lock *
 lock_create(const char *name)
 {
-        struct lock *lock;
+    struct lock *lock;
 
-        lock = kmalloc(sizeof(struct lock));
-        if (lock == NULL) {
-                return NULL;
-        }
+    lock = kmalloc(sizeof(struct lock));
+    if (lock == NULL) {
+      return NULL;
+    }
 
-        lock->lk_name = kstrdup(name);
-        if (lock->lk_name == NULL) {
-                kfree(lock);
-                return NULL;
-        }
+    lock->lk_name = kstrdup(name);
+    if (lock->lk_name == NULL) {
+      kfree(lock);
+      return NULL;
+    }
+
+	lock->lk_wchan = wchan_create(lock->lk_name);
+  if (lock->lk_wchan == NULL){
+		kfree(lock->lk_name);
+		kfree(lock);
+	}
+
+	lock->lk_owner = NULL;
+	spinlock_init(&lock->lk_spinlock);
         
-        // add stuff here as needed
-        
-        return lock;
+  return lock;
 }
 
 void
 lock_destroy(struct lock *lock)
 {
-        KASSERT(lock != NULL);
+  KASSERT(lock != NULL);
 
-        // add stuff here as needed
-        
-        kfree(lock->lk_name);
-        kfree(lock);
+	spinlock_cleanup(&lock->lk_spinlock);
+	wchan_destroy(lock->lk_wchan);
+  kfree(lock->lk_owner);
+  kfree(lock->lk_name);
+  kfree(lock);
 }
 
 void
 lock_acquire(struct lock *lock)
 {
-        // Write this
+	spinlock_acquire(&lock->lk_spinlock);
+	if(lock_do_i_hold(lock))//we don't already have acquired it!
+	{
+		spinlock_release(&lock->lk_spinlock);
+		return;
+	}
+	else
+	{
+		while(lock->lk_owner != NULL)
+		{
+			wchan_lock(lock->lk_wchan);
+			spinlock_release(&lock->lk_spinlock);
+			wchan_sleep(lock->lk_wchan);
 
-        (void)lock;  // suppress warning until code gets written
+			//returns from sleep here
+			spinlock_acquire(&lock->lk_spinlock);
+		}
+		lock->lk_owner = curthread;
+	}
+	spinlock_release(&lock->lk_spinlock);
 }
 
 void
 lock_release(struct lock *lock)
 {
-        // Write this
-
-        (void)lock;  // suppress warning until code gets written
+	spinlock_acquire(&lock->lk_spinlock);
+  if(lock_do_i_hold(lock))
+	{
+		lock->lk_owner = NULL;
+		wchan_wakeone(lock->lk_wchan);
+	}
+	spinlock_release(&lock->lk_spinlock);
 }
 
 bool
 lock_do_i_hold(struct lock *lock)
 {
-        // Write this
-
-        (void)lock;  // suppress warning until code gets written
-
-        return true; // dummy until code gets written
+	return lock->lk_owner == curthread;
 }
 
 ////////////////////////////////////////////////////////////
-//
-// CV
+// CV - SPB & FAR
 
 
 struct cv *
 cv_create(const char *name)
 {
-        struct cv *cv;
+  struct cv *cv;
 
-        cv = kmalloc(sizeof(struct cv));
-        if (cv == NULL) {
-                return NULL;
-        }
+  cv = kmalloc(sizeof(struct cv));
+  if (cv == NULL) {
+    return NULL;
+  }
 
-        cv->cv_name = kstrdup(name);
-        if (cv->cv_name==NULL) {
-                kfree(cv);
-                return NULL;
-        }
-        
-        // add stuff here as needed
-        
-        return cv;
+  cv->cv_name = kstrdup(name);
+  if (cv->cv_name==NULL) {
+    kfree(cv);
+    return NULL;
+  }
+
+  //create the wchan for CV
+  cv->cv_wchan = wchan_create(cv->cv_name);
+  if (cv->cv_wchan == NULL)
+  {
+  	kfree(cv->cv_name);
+  	kfree(cv);
+  }
+      
+  return cv;
 }
 
 void
 cv_destroy(struct cv *cv)
 {
-        KASSERT(cv != NULL);
+  KASSERT(cv != NULL);
 
-        // add stuff here as needed
-        
-        kfree(cv->cv_name);
-        kfree(cv);
+  wchan_destroy(cv->cv_wchan);
+  kfree(cv->cv_name);
+  kfree(cv);
 }
+
 
 void
 cv_wait(struct cv *cv, struct lock *lock)
 {
-        // Write this
-        (void)cv;    // suppress warning until code gets written
-        (void)lock;  // suppress warning until code gets written
+	KASSERT( cv != NULL );
+	wchan_lock(cv->cv_wchan);
+	lock_release(lock);
+	wchan_sleep(cv->cv_wchan);
+	lock_acquire(lock);
 }
 
 void
 cv_signal(struct cv *cv, struct lock *lock)
 {
-        // Write this
-	(void)cv;    // suppress warning until code gets written
-	(void)lock;  // suppress warning until code gets written
+	KASSERT( lock_do_i_hold(lock) );
+	wchan_wakeone(cv->cv_wchan);
 }
 
 void
 cv_broadcast(struct cv *cv, struct lock *lock)
 {
-	// Write this
-	(void)cv;    // suppress warning until code gets written
-	(void)lock;  // suppress warning until code gets written
+	KASSERT( lock_do_i_hold(lock) );
+	wchan_wakeall(cv->cv_wchan);
+}
+
+////////////////////////////////////////////////////////////
+// RW Lock - SPB & FAR
+
+struct rwlock * rwlock_create(const char *name)
+{
+  struct rwlock *rwlock;
+  rwlock = kmalloc(sizeof(struct rwlock));
+  if (rwlock == NULL) {
+    return NULL;
+  }
+
+  rwlock->rwlock_name = kstrdup(name);
+  if (rwlock->rwlock_name == NULL) {
+    kfree(rwlock);
+    return NULL;
+  }
+
+  rwlock->write_cv = cv_create(rwlock->rwlock_name);
+  if (rwlock->write_cv == NULL)
+	{
+		cv_destroy(rwlock->write_cv);
+		return NULL;
+	}
+
+  rwlock->read_cv = cv_create(rwlock->rwlock_name);
+  if (rwlock->read_cv == NULL)
+  {
+    cv_destroy(rwlock->read_cv);
+    return NULL;
+  }
+
+  rwlock->lk = lock_create(rwlock->rwlock_name);
+  if (rwlock->lk == NULL)
+  {
+    lock_destroy(rwlock->lk);
+    return NULL;
+  }
+  rwlock->hold_readers = 0;
+  rwlock->is_writing = 0;
+  rwlock->num_readers = 0;
+
+  return rwlock;
+}
+
+void rwlock_destroy(struct rwlock *rwlock)
+{
+    KASSERT(rwlock != NULL);
+
+    lock_destroy(rwlock->lk);
+    cv_destroy(rwlock->write_cv);
+    cv_destroy(rwlock->read_cv);
+
+    kfree(&rwlock->hold_readers);
+    kfree(&rwlock->is_writing);
+    kfree(&rwlock->num_readers);
+    kfree(rwlock->rwlock_name);
+    kfree(rwlock);
+}
+
+void rwlock_acquire_read(struct rwlock *rwlock)
+{
+	lock_acquire(rwlock->lk);
+
+	//while a writer is writing DONT LET ANY READERS IN
+	//OR if we need to hold readers - aka LET CURRENT READERS FINISH!
+	while(rwlock->is_writing == 1 || rwlock->hold_readers == 1){
+		cv_wait(rwlock->read_cv, rwlock->lk);//READERS THAT ARE WAITING FOR WRITERS
+	}
+	rwlock->num_readers++;//current reader reading!
+	lock_release(rwlock->lk);
+}
+
+void rwlock_release_read(struct rwlock *rwlock)
+{
+	lock_acquire(rwlock->lk);
+	rwlock->num_readers--;//Current reader DONE reading.
+
+	//After each reader releases the lock, we want to see if writers are waiting
+	//If so we want to let all readers to finish which would allow a writer to come in
+	//Else if there are no writers waiting we can keep signaling readers if they are there.
+	if(rwlock->hold_readers == 1 && rwlock->num_readers > 0){
+		//still readers that need to finish - so do nothing until they finish.
+	}	//once all readers have finished:
+	else if(rwlock->hold_readers == 1 && rwlock->num_readers == 0){
+		//SIGNAL READERS AND WRITERS AND LET THEM COMPETE evenly
+		rwlock->hold_readers = 0;//we don't need to hold readers anymore
+    //HERE WE ARE PURPOSELY BROADCASTING READERS AND NOT WRITERS
+    //Since we expect their to be mmore read instructions than write
+		cv_signal(rwlock->read_cv, rwlock->lk);
+		cv_signal(rwlock->write_cv, rwlock->lk);
+	}else{	//No writers waiting so broadcast all readers if any waiting
+		cv_broadcast(rwlock->read_cv, rwlock->lk);
+	}
+	lock_release(rwlock->lk);
+}
+
+void rwlock_acquire_write(struct rwlock *rwlock)
+{
+	lock_acquire(rwlock->lk);
+
+	//IF another thread is CURRENTLY reading or writing, allow it to finish
+	while(rwlock->is_writing == 1 || rwlock->num_readers > 0){
+		rwlock->hold_readers = 1;
+		cv_wait(rwlock->write_cv, rwlock->lk);
+	}
+	rwlock->hold_readers = 0;//readers finished,since we are now writing
+	rwlock->is_writing = 1;//writer has the lock and is writing
+	lock_release(rwlock->lk); //--Don't release lock till writing is ready to release??--
+}
+
+void rwlock_release_write(struct rwlock *rwlock)
+{
+	lock_acquire(rwlock->lk);//--writer finished writing... now releasing--
+	rwlock->is_writing = 0;//writers should go back to 0
+
+	//After writer releases, lock become "UNHELD" either a reader OR a writer can come next
+	//Should we randomly allow either a read or write to come next??
+	//SIGNAL ALL Readers and WRITERS NOW! - Since we have the lock, they will be competing
+	//for the lock once we release it.
+    //HERE WE ARE PURPOSELY BROADCASTING READERS AND NOT WRITERS 
+    //Since we expect their to be more read instructions than write
+	cv_signal(rwlock->read_cv, rwlock->lk);
+	cv_signal(rwlock->write_cv, rwlock->lk);
+
+	lock_release(rwlock->lk);
 }
