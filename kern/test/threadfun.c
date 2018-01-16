@@ -45,6 +45,7 @@ runthreads(int NTHREADS)
 	for (i=0; i<NTHREADS; i++) {
 		snprintf(name, sizeof(name), "threadtest%d", i);
 		result = thread_fork(name, NULL, funthread, NULL, i);
+		DEBUG(DB_SYNCPROB, "\nthread %d created\n", i);
 		if (result) {
 			panic("threadtest: thread_fork failed %s)\n", 
 			      strerror(result));

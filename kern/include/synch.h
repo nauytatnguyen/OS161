@@ -1,4 +1,10 @@
 /*
+ * SPB & FAR
+ *  1) Semaphore
+ * 	2) Lock
+ * 	3) CV
+ * 	4) rwlock
+ * Header file for synchronization primitives.
  * Copyright (c) 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009
  *	The President and Fellows of Harvard College.
  *
@@ -30,11 +36,6 @@
 #ifndef _SYNCH_H_
 #define _SYNCH_H_
 
-/*
- * Header file for synchronization primitives.
- */
-
-
 #include <spinlock.h>
 
 /*
@@ -45,8 +46,8 @@
  */
 struct semaphore {
         char *sem_name;
-        struct wchan *sem_wchan;
-        struct spinlock sem_lock;
+	struct wchan *sem_wchan;
+	struct spinlock sem_lock;
         volatile int sem_count;
 };
 
@@ -73,55 +74,42 @@ void V(struct semaphore *);
  * (should be) made internally.
  */
 struct lock {
-        char *lk_name;
-        // add what you need here
-        
-        struct wchan *lk_wchan;
-        struct spinlock lk_lock;
-        struct thread volatile *lk_owner;
-        
-        
-        // (don't forget to mark things volatile as needed)
+  char *lk_name;
+	struct thread *lk_owner;
+	struct wchan *lk_wchan;
+	struct spinlock lk_spinlock;
 };
 
 struct lock *lock_create(const char *name);
-void lock_acquire(struct lock *);
+void lock_acquire(struct lock *lock);
 
 /*
  * Operations:
- *    lock_acquire - Get the lock. Only one thread can hold the lock at the
- *                   same time.
- *    lock_release - Free the lock. Only the thread holding the lock may do
- *                   this.
- *    lock_do_i_hold - Return true if the current thread holds the lock; 
- *                   false otherwise.
+ *    lock_acquire - Get the lock. Only one thread can hold the lock at the  same time.
+ *    lock_release - Free the lock. Only the thread holding the lock may do this.
+ *    lock_do_i_hold - Return true if the current thread holds the lock, false otherwise.
  *
- * These operations must be atomic. You get to write them.
+ * These operations must be atomic.
  */
-void lock_release(struct lock *);
-bool lock_do_i_hold(struct lock *);
-void lock_destroy(struct lock *);
+void lock_release(struct lock *lock);
+bool lock_do_i_hold(struct lock *lock);
+void lock_destroy(struct lock *lock);
 
 
 /*
  * Condition variable.
  *
- * Note that the "variable" is a bit of a misnomer: a CV is normally used
- * to wait until a variable meets a particular condition, but there's no
- * actual variable, as such, in the CV.
+ * Note that the "variable" is a bit of a misnomer: a CV is normally used to wait until a variable meets
+ * a particular condition, but there's no actual variable, as such, in the CV.
  *
- * These CVs are expected to support Mesa semantics, that is, no
- * guarantees are made about scheduling.
+ * These CVs are expected to support Mesa semantics, that is, no guarantees are made about scheduling.
  *
- * The name field is for easier debugging. A copy of the name is
- * (should be) made internally.
+ * The name field is for easier debugging. A copy of the name is (should be) made internally.
  */
 
 struct cv {
         char *cv_name;
-        // add what you need here
         struct wchan *cv_wchan;
-        // (don't forget to mark things volatile as needed)
 };
 
 struct cv *cv_create(const char *name);
@@ -144,5 +132,36 @@ void cv_wait(struct cv *cv, struct lock *lock);
 void cv_signal(struct cv *cv, struct lock *lock);
 void cv_broadcast(struct cv *cv, struct lock *lock);
 
+/**
+ * Reader-Writer Lock
+ */
+
+struct rwlock {
+        char *rwlock_name;
+        struct cv *write_cv;
+        struct cv *read_cv;
+        int hold_readers;
+        int is_writing;
+        int num_readers;
+        struct lock *lk;
+};
+
+/*
+ * Read-Write Lock Operations:
+ *
+ * rwlock_create
+ * rwlock_destroy
+ * rwlock_acquire_read
+ * rwlock_release_read
+ * rwlock_acquire_write
+ * rwlock_release_write
+ */
+struct rwlock * rwlock_create(const char *name);
+void rwlock_destroy(struct rwlock *rwlock);
+
+void rwlock_acquire_read(struct rwlock *rwlock);
+void rwlock_release_read(struct rwlock *rwlock);
+void rwlock_acquire_write(struct rwlock *rwlock);
+void rwlock_release_write(struct rwlock *rwlock);
 
 #endif /* _SYNCH_H_ */

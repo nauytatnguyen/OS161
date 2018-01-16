@@ -478,6 +478,7 @@ static const char *testmenu[] = {
 	"[tf] thread fun					 ",
 	"[utc] unsafe thread counter		 ",
     "[ltc] lock thread counter           ",
+    "[slc] spinlock thread counter       ",
 	NULL
 };
 
@@ -597,6 +598,7 @@ static struct {
 	{ "tf", threadfun },
 	{ "utc", unsafethreadcounter },
     { "ltc", lockthreadcounter   },
+    { "slc", spinlockthreadcounter  },
 	{ NULL, NULL }
 };
 

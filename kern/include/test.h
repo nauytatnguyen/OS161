@@ -63,6 +63,7 @@ int cvtest(int, char **);
 
 int unsafethreadcounter(int, char **);
 int lockthreadcounter(int, char **);
+int spinlockthreadcounter(int, char **);
 
 #ifdef UW
 /* Another thread and synchronization test */
