@@ -36,15 +36,17 @@
  * Note: curproc is defined by <current.h>.
  */
 
-#include <spinlock.h>
+//#include <spinlock.h>
 #include <thread.h> /* required for struct threadarray */
-
+#include <synch.h>
 struct addrspace;
 struct vnode;
 #ifdef UW
 struct semaphore;
 #endif // UW
 
+
+#define MAX_PID 256
 /*
  * Process structure.
  */
@@ -69,15 +71,29 @@ struct proc {
 #endif
 
 	/* add more material here as needed */
+
+	pid_t p_pid;
+	pid_t pp_pid;
+	struct lock* p_exit_lock;
+	struct cv* p_exit_cv;
+	int p_exit_code;
+	bool p_exited;
 };
 
 /* This is the process structure for the kernel and for kernel-only threads. */
 extern struct proc *kproc;
 
+
+struct proc* proc_table[MAX_PID];
+struct lock* proc_table_lock;
+
+
 /* Semaphore used to signal when there are no more processes */
 #ifdef UW
 extern struct semaphore *no_proc_sem;
 #endif // UW
+
+
 
 /* Call once during system startup to allocate data structures. */
 void proc_bootstrap(void);

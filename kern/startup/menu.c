@@ -42,6 +42,9 @@
 #include <sfs.h>
 #include <syscall.h>
 #include <test.h>
+
+#include <current.h>
+
 #include "opt-synchprobs.h"
 #include "opt-sfs.h"
 #include "opt-net.h"
@@ -106,6 +109,12 @@ cmd_progthread(void *ptr, unsigned long nargs)
 	if (result) {
 		kprintf("Running program %s failed: %s\n", args[0],
 			strerror(result));
+
+//code add
+		struct proc* p = curproc;
+		proc_remthread(curthread);
+		proc_destroy(p);
+
 		return;
 	}
 
@@ -720,3 +729,5 @@ menu(char *args)
 		menu_execute(buf, 0);
 	}
 }
+
+

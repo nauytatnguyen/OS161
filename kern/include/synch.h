@@ -74,14 +74,15 @@ void V(struct semaphore *);
  * (should be) made internally.
  */
 struct lock {
-  char *lk_name;
-	struct thread *lk_owner;
+  	char *lk_name;
 	struct wchan *lk_wchan;
-	struct spinlock lk_spinlock;
+	struct spinlock lk_lock;
+	volatile const struct thread *holder;
+	volatile unsigned int depth;
 };
 
 struct lock *lock_create(const char *name);
-void lock_acquire(struct lock *lock);
+void lock_acquire(struct lock *);
 
 /*
  * Operations:
@@ -132,10 +133,7 @@ void cv_wait(struct cv *cv, struct lock *lock);
 void cv_signal(struct cv *cv, struct lock *lock);
 void cv_broadcast(struct cv *cv, struct lock *lock);
 
-/**
- * Reader-Writer Lock
- */
-
+/*
 struct rwlock {
         char *rwlock_name;
         struct cv *write_cv;
@@ -146,7 +144,7 @@ struct rwlock {
         struct lock *lk;
 };
 
-/*
+
  * Read-Write Lock Operations:
  *
  * rwlock_create
@@ -155,7 +153,7 @@ struct rwlock {
  * rwlock_release_read
  * rwlock_acquire_write
  * rwlock_release_write
- */
+
 struct rwlock * rwlock_create(const char *name);
 void rwlock_destroy(struct rwlock *rwlock);
 
@@ -163,5 +161,5 @@ void rwlock_acquire_read(struct rwlock *rwlock);
 void rwlock_release_read(struct rwlock *rwlock);
 void rwlock_acquire_write(struct rwlock *rwlock);
 void rwlock_release_write(struct rwlock *rwlock);
-
+*/
 #endif /* _SYNCH_H_ */
